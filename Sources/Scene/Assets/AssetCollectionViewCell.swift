@@ -27,7 +27,13 @@ import Photos
 The photo cell.
 */
 class AssetCollectionViewCell: UICollectionViewCell {
+    enum Constants {
+        static let cornerRadius: CGFloat = 5.0
+    }
+
     let imageView: UIImageView = UIImageView(frame: .zero)
+    let label: UILabel = UILabel(frame: .zero)
+
     var settings: Settings! {
         didSet { selectionView.settings = settings }
     }
@@ -69,19 +75,37 @@ class AssetCollectionViewCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = Constants.cornerRadius
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.clipsToBounds = true
+        label.font = UIFont.systemFont(ofSize: 11.0)
+        label.textColor = .gray
+        label.textAlignment = .center
+        label.backgroundColor = .white
+        label.layer.cornerRadius = Constants.cornerRadius
+
         selectionOverlayView.backgroundColor = UIColor.systemOverlayColor
         selectionOverlayView.translatesAutoresizingMaskIntoConstraints = false
         selectionView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(imageView)
+        contentView.addSubview(label)
         contentView.addSubview(selectionOverlayView)
         contentView.addSubview(selectionView)
+        contentView.layer.shadowColor = UIColor.gray.cgColor
+        contentView.dropShadow()
 
         // Add constraints
         NSLayoutConstraint.activate([
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            imageView.bottomAnchor.constraint(equalTo: label.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            label.topAnchor.constraint(equalTo: imageView.bottomAnchor),
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            label.heightAnchor.constraint(equalToConstant: 30),
             selectionOverlayView.topAnchor.constraint(equalTo: contentView.topAnchor),
             selectionOverlayView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             selectionOverlayView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -89,7 +113,7 @@ class AssetCollectionViewCell: UICollectionViewCell {
             selectionView.heightAnchor.constraint(equalToConstant: 25),
             selectionView.widthAnchor.constraint(equalToConstant: 25),
             selectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4),
-            selectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4)
+            selectionView.bottomAnchor.constraint(equalTo: label.topAnchor, constant: -4)
         ])
 
         updateAlpha(isSelected)
@@ -103,6 +127,7 @@ class AssetCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
+        label.text = nil
         selectionIndex = nil
     }
     
@@ -119,4 +144,33 @@ class AssetCollectionViewCell: UICollectionViewCell {
             self.selectionOverlayView.alpha = 0.0
         }
     }
+}
+
+extension UIView {
+
+  // OUTPUT 1
+  func dropShadow(scale: Bool = true) {
+    layer.masksToBounds = false
+    layer.shadowColor = UIColor.gray.cgColor
+    layer.shadowOpacity = 0.5
+    layer.shadowOffset = CGSize(width: 1, height: 1)
+    layer.shadowRadius = 5
+
+    layer.shadowPath = UIBezierPath(rect: bounds).cgPath
+    layer.shouldRasterize = true
+    layer.rasterizationScale = scale ? UIScreen.main.scale : 1
+  }
+
+  // OUTPUT 2
+  func dropShadow(color: UIColor, opacity: Float = 0.5, offSet: CGSize, radius: CGFloat = 1, scale: Bool = true) {
+    layer.masksToBounds = false
+    layer.shadowColor = color.cgColor
+    layer.shadowOpacity = opacity
+    layer.shadowOffset = offSet
+    layer.shadowRadius = radius
+
+    layer.shadowPath = UIBezierPath(rect: self.bounds).cgPath
+    layer.shouldRasterize = true
+    layer.rasterizationScale = scale ? UIScreen.main.scale : 1
+  }
 }

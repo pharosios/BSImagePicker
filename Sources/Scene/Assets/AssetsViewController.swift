@@ -154,7 +154,7 @@ class AssetsViewController: UIViewController {
         let itemSpacing = settings.list.spacing
         let itemsPerRow = settings.list.cellsPerRow(traitCollection.verticalSizeClass, traitCollection.horizontalSizeClass)
         let itemWidth = (collectionView.bounds.width - CGFloat(itemsPerRow - 1) * itemSpacing) / CGFloat(itemsPerRow)
-        let itemSize = CGSize(width: itemWidth, height: itemWidth)
+        let itemSize = CGSize(width: itemWidth, height: itemWidth + 20)
 
         collectionViewFlowLayout.minimumLineSpacing = itemSpacing
         collectionViewFlowLayout.minimumInteritemSpacing = itemSpacing

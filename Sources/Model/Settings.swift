@@ -27,6 +27,8 @@ import Photos
 @objcMembers public class Settings : NSObject {
     public static let shared = Settings()
 
+    public var imageTitle: String?
+
     // Move all theme related stuff to UIAppearance
     public class Theme : NSObject {
         /// Main background color
