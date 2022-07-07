@@ -98,9 +98,12 @@ class AssetsCollectionViewDataSource : NSObject, UICollectionViewDataSource {
         if cell.tag != 0 {
             imageManager.cancelImageRequest(PHImageRequestID(cell.tag))
         }
-        
-        // Request image
-        cell.tag = Int(imageManager.requestImage(for: asset, targetSize: imageSize, contentMode: contentMode, options: settings.fetch.preview.photoOptions) { (image, _) in
+
+        imageManager.requestImageDataAndOrientation(for: asset, options:  settings.fetch.preview.photoOptions) { data, string, _, options in
+            cell.label.text = ByteCountFormatter.string(fromByteCount: Int64(data?.count ?? 0), countStyle: .file)
+        }
+
+        cell.tag = Int(imageManager.requestImage(for: asset, targetSize: imageSize, contentMode: contentMode, options:  settings.fetch.preview.photoOptions) { (image, _) in
             guard let image = image else { return }
             cell.imageView.image = image
         })
